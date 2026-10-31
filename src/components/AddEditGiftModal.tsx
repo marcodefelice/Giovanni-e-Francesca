@@ -31,6 +31,9 @@ export const AddEditGiftModal: React.FC<AddEditGiftModalProps> = ({
   const { addGift, updateGift, settings } = useRegistry();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [titleEn, setTitleEn] = useState(giftToEdit?.titleEn || '');
+  const [subtitleEn, setSubtitleEn] = useState(giftToEdit?.subtitleEn || '');
+  const [descriptionEn, setDescriptionEn] = useState(giftToEdit?.descriptionEn || '');
   const [title, setTitle] = useState<string>(giftToEdit?.title || '');
   const [subtitle, setSubtitle] = useState<string>(giftToEdit?.subtitle || '');
   const [category, setCategory] = useState<GiftCategory>(giftToEdit?.category || 'honeymoon');
@@ -76,6 +79,7 @@ export const AddEditGiftModal: React.FC<AddEditGiftModalProps> = ({
 
     if (giftToEdit) {
       updateGift(giftToEdit.id, {
+        titleEn: titleEn.trim(), subtitleEn: subtitleEn.trim(), descriptionEn: descriptionEn.trim(),
         title: title.trim(),
         subtitle: subtitle.trim(),
         category,
@@ -87,6 +91,7 @@ export const AddEditGiftModal: React.FC<AddEditGiftModalProps> = ({
       });
     } else {
       addGift({
+        titleEn: titleEn.trim(), subtitleEn: subtitleEn.trim(), descriptionEn: descriptionEn.trim(),
         title: title.trim(),
         subtitle: subtitle.trim(),
         category,
@@ -134,6 +139,12 @@ export const AddEditGiftModal: React.FC<AddEditGiftModalProps> = ({
 
         {/* Form Body - Horizontal Two Column Layout */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-y-auto">
+          <div className="p-6 space-y-2 border-b border-stone-200">
+            <p className="text-sm font-semibold">Traduzione inglese (facoltativa)</p>
+            <input aria-label="Titolo in inglese" placeholder="Titolo in inglese" value={titleEn} onChange={e => setTitleEn(e.target.value)} className="w-full px-3 py-2 border rounded-xl" />
+            <input aria-label="Sottotitolo in inglese" placeholder="Sottotitolo in inglese" value={subtitleEn} onChange={e => setSubtitleEn(e.target.value)} className="w-full px-3 py-2 border rounded-xl" />
+            <textarea aria-label="Descrizione in inglese" placeholder="Descrizione in inglese" value={descriptionEn} onChange={e => setDescriptionEn(e.target.value)} className="w-full px-3 py-2 border rounded-xl" />
+          </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
             
             {/* LEFT COLUMN: Image & Visual Card Preview (5 cols) */}

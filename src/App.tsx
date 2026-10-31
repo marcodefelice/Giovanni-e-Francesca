@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { LanguageProvider, LanguageSelector, useLanguage } from './i18n/Language';
 import { RegistryProvider, useRegistry } from './context/RegistryContext';
 import { Navbar } from './components/Navbar';
 import { SidebarDrawer } from './components/SidebarDrawer';
@@ -22,6 +23,7 @@ import { Heart, ShieldCheck, Code2 } from 'lucide-react';
 
 const MainContent: React.FC = () => {
   const { activeView, settings, setActiveView } = useRegistry();
+  const { language } = useLanguage();
 
   // If in dedicated embed view (for iframe on external websites)
   if (activeView === 'embed_view') {
@@ -48,6 +50,7 @@ const MainContent: React.FC = () => {
           </div>
         )}
 
+        <div className="flex justify-end px-4 py-2"><LanguageSelector /></div>
         <GuestEmbedView />
       </div>
     );
@@ -80,7 +83,7 @@ const MainContent: React.FC = () => {
               {settings.coupleNames}
             </span>
             <span aria-hidden="true">·</span>
-            <span>Lista Nozze & Desideri</span>
+            <span>{language === 'en' ? 'Wedding Registry & Wishes' : 'Lista Nozze & Desideri'}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs">
@@ -140,8 +143,8 @@ const MainContent: React.FC = () => {
 
 export default function App() {
   return (
-    <RegistryProvider>
+    <LanguageProvider><RegistryProvider>
       <MainContent />
-    </RegistryProvider>
+    </RegistryProvider></LanguageProvider>
   );
 }

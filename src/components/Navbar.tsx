@@ -1,10 +1,12 @@
 import React from 'react';
+import { LanguageSelector, useLanguage } from '../i18n/Language';
 import { useRegistry } from '../context/RegistryContext';
 import { Menu, X } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { activeView, setActiveView, settings, donations, toggleSidebar, isSidebarOpen } = useRegistry();
 
+  const { language } = useLanguage();
   const pendingThankYous = donations.filter((d) => !d.thankYouSent).length;
 
   const viewTitles: Record<string, string> = {
@@ -41,7 +43,7 @@ export const Navbar: React.FC = () => {
                 <Menu className="w-5 h-5 text-[#636842]" />
               )}
               <span className="text-xs font-bold text-stone-900 tracking-wide uppercase">
-                Menù
+                {language === 'en' ? 'Menu' : 'Menù'}
               </span>
             </button>
 
@@ -54,6 +56,7 @@ export const Navbar: React.FC = () => {
 
           {/* Right: Quick Switcher & Active Section */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSelector />
             {/* Quick access button to Dashboard when on guest view */}
             {activeView !== 'organizer_dashboard' ? (
               <button
@@ -61,7 +64,7 @@ export const Navbar: React.FC = () => {
                 onClick={() => setActiveView('organizer_dashboard')}
                 className="px-3 py-1.5 bg-[#636842] hover:bg-[#525636] text-white text-xs font-semibold rounded-xl shadow-2xs transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                <span>Dashboard Sposi</span>
+                <span>{language === 'en' ? 'Couple dashboard' : 'Dashboard Sposi'}</span>
               </button>
             ) : (
               <button
@@ -79,8 +82,8 @@ export const Navbar: React.FC = () => {
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-stone-800 hover:text-stone-950 bg-[#BCBF97]/25 hover:bg-[#BCBF97]/40 border border-[#BCBF97] rounded-xl transition-all shadow-2xs cursor-pointer"
               title="Apri tutte le voci del pannello sposi"
             >
-              <span className="hidden xs:inline">Tutte le Voci</span>
-              <span className="xs:hidden">Sezioni</span>
+              <span className="hidden xs:inline">{language === 'en' ? 'All sections' : 'Tutte le Voci'}</span>
+              <span className="xs:hidden">{language === 'en' ? 'Sections' : 'Sezioni'}</span>
               <span className="text-stone-400">&rarr;</span>
             </button>
           </div>

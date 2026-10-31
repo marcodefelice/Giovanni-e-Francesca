@@ -54,6 +54,8 @@ const PRESET_IMAGES = [
 
 export const HomeImageManager: React.FC = () => {
   const { settings, updateSettings, setActiveView } = useRegistry();
+  const [eventTitleEn, setEventTitleEn] = useState(settings.eventTitleEn || '');
+  const [welcomeMessageEn, setWelcomeMessageEn] = useState(settings.welcomeMessageEn || '');
   const [customUrl, setCustomUrl] = useState('');
   const [urlError, setUrlError] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -113,6 +115,13 @@ export const HomeImageManager: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <form className="p-5 bg-white border border-stone-200 rounded-xl space-y-3" onSubmit={async e => { e.preventDefault(); if (await updateSettings({ eventTitleEn: eventTitleEn.trim(), welcomeMessageEn: welcomeMessageEn.trim() })) triggerSuccess(); }}>
+        <h2 className="font-bold">Testi della lista in inglese</h2>
+        <p className="text-xs text-stone-600">Lascia vuoto per usare il testo originale o la traduzione disponibile.</p>
+        <input aria-label="Titolo evento in inglese" placeholder="Titolo evento in inglese" value={eventTitleEn} onChange={e => setEventTitleEn(e.target.value)} className="w-full px-3 py-2 border rounded-xl" />
+        <textarea aria-label="Messaggio di benvenuto in inglese" placeholder="Messaggio di benvenuto in inglese" value={welcomeMessageEn} onChange={e => setWelcomeMessageEn(e.target.value)} className="w-full px-3 py-2 border rounded-xl" />
+        <button type="submit" className="px-4 py-2 bg-[#636842] text-white rounded-xl">Salva traduzioni</button>
+      </form>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
         <div>

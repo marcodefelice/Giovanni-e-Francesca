@@ -1,3 +1,4 @@
+import { useLanguage, translateContent } from '../i18n/Language';
 import React, { useState } from 'react';
 import { useRegistry } from '../context/RegistryContext';
 import { GiftItem, GiftCategory } from '../types';
@@ -5,15 +6,17 @@ import { ContributeModal } from './ContributeModal';
 import { Heart, Search, Check, Sparkles, MapPin, Calendar, ShieldCheck, ArrowRight, Gift, Camera, CreditCard } from 'lucide-react';
 
 export const GuestRegistryView: React.FC = () => {
+  const { language } = useLanguage();
+  const tr = (it: string, en: string) => language === 'en' ? en : it;
   const { gifts, settings, totalRaised, totalTarget, setActiveView } = useRegistry();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeGiftForContribute, setActiveGiftForContribute] = useState<GiftItem | null>(null);
 
   const filteredGifts = gifts.filter((gift) => {
     const matchesSearch =
-      gift.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      gift.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      gift.description.toLowerCase().includes(searchQuery.toLowerCase());
+      translateContent(gift.title, language, gift.titleEn).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      translateContent(gift.subtitle, language, gift.subtitleEn).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      translateContent(gift.description, language, gift.descriptionEn).toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 
@@ -21,10 +24,10 @@ export const GuestRegistryView: React.FC = () => {
   const stripeReady = settings.stripeEnabled && settings.stripeStatus === 'connected' && Boolean(settings.stripeAccountId);
   const weddingFund: GiftItem = {
     id: 'wedding-fund',
-    title: 'Contributo libero per gli sposi',
-    subtitle: 'Un regalo da destinare ai nostri progetti insieme',
+    title: tr('Contributo libero per gli sposi', 'A contribution for the couple'),
+    subtitle: tr('Un regalo da destinare ai nostri progetti insieme', 'A gift for our future together'),
     category: 'custom',
-    description: 'Scegli liberamente l’importo del tuo dono.',
+    description: tr('Scegli liberamente l’importo del tuo dono.', 'Choose the amount of your gift.'),
     imageUrl: settings.heroImage,
     targetAmount: 0,
     raisedAmount: 0,
@@ -49,17 +52,17 @@ export const GuestRegistryView: React.FC = () => {
               {settings.coupleNames}
             </h1>
             <p className="text-xs uppercase tracking-widest text-[#636842] font-semibold">
-              {settings.eventTitle}
+              {translateContent(settings.eventTitle, language, settings.eventTitleEn)}
             </p>
           </div>
 
           {/* Romantic Welcome Card */}
           <div className="p-6 sm:p-8 bg-stone-50/90 rounded-2xl border border-stone-200 shadow-2xs relative text-left">
             <p className="font-editorial italic text-stone-800 text-lg sm:text-xl leading-relaxed text-center">
-              "{settings.welcomeMessage}"
+              "{translateContent(settings.welcomeMessage, language, settings.welcomeMessageEn)}"
             </p>
             <div className="mt-4 pt-4 border-t border-stone-200/80 flex items-center justify-between text-xs text-stone-500">
-              <span>Con affetto profondo,</span>
+              <span>{tr("Con affetto profondo,", "With love,")}</span>
               <span className="text-xs sm:text-sm font-semibold text-stone-800">
                 {settings.coupleNames}
               </span>
@@ -70,9 +73,9 @@ export const GuestRegistryView: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[#BCBF97]/15 rounded-xl border border-[#BCBF97]/60 text-left">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-semibold text-stone-900">
-                <span>Stato Raccolta Lista Desideri</span>
+                <span>{tr("Stato Raccolta Lista Desideri", "Registry progress")}</span>
                 <span className="text-stone-400">·</span>
-                <span className="tabular-nums">{percentOverall}% completato</span>
+                <span className="tabular-nums">{percentOverall}% {tr('completato', 'complete')}</span>
               </div>
               <div className="w-48 sm:w-64 h-2 bg-stone-200 rounded-full overflow-hidden">
                 <div
@@ -84,7 +87,7 @@ export const GuestRegistryView: React.FC = () => {
 
             <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
               <ShieldCheck className="w-4 h-4 text-[#696d48]" />
-              <span>Pagamento con carta Stripe o bonifico IBAN</span>
+              <span>{tr("Pagamento con carta Stripe o bonifico IBAN", "Pay by card with Stripe or by bank transfer")}</span>
             </div>
           </div>
         </div>
@@ -99,9 +102,9 @@ export const GuestRegistryView: React.FC = () => {
                 <Heart className="h-5 w-5" fill="currentColor" />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">Un regalo per noi</span>
-                <h2 className="mt-1 font-editorial text-2xl font-bold text-stone-900">Invia un contributo libero agli sposi</h2>
-                <p className="mt-1 max-w-xl text-sm leading-relaxed text-stone-600">Scegli l’importo del tuo regalo e paga in modo sicuro con carta tramite Stripe.</p>
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">{tr("Un regalo per noi", "A gift for us")}</span>
+                <h2 className="mt-1 font-editorial text-2xl font-bold text-stone-900">{tr("Invia un contributo libero agli sposi", "Make a contribution to the couple")}</h2>
+                <p className="mt-1 max-w-xl text-sm leading-relaxed text-stone-600">{tr("Scegli l’importo del tuo regalo e paga in modo sicuro con carta tramite Stripe.", "Choose your gift amount and pay securely by card with Stripe.")}</p>
               </div>
             </div>
             <button
@@ -110,12 +113,12 @@ export const GuestRegistryView: React.FC = () => {
               className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold shadow-sm transition-colors ${stripeReady ? 'bg-emerald-700 text-white hover:bg-emerald-800' : 'bg-[#636842] text-white hover:bg-[#525636]'}`}
             >
               {stripeReady ? <CreditCard className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
-              {stripeReady ? 'Dona con carta' : 'Invia un contributo'}
+              {stripeReady ? tr('Dona con carta', 'Give by card') : tr('Invia un contributo', 'Make a contribution')}
             </button>
           </div>
           <div className="flex items-center gap-2 border-t border-emerald-200/80 bg-white/70 px-6 py-3 text-xs text-stone-600 sm:px-8">
             <ShieldCheck className="h-4 w-4 text-emerald-700" />
-            {stripeReady ? 'Il pagamento viene elaborato da Stripe: i dati della carta non passano da questo sito.' : 'Potrai scegliere le modalità di pagamento disponibili per questa lista.'}
+            {stripeReady ? tr('Il pagamento viene elaborato da Stripe: i dati della carta non passano da questo sito.', 'Stripe processes the payment; your card details do not pass through this site.') : tr('Potrai scegliere le modalità di pagamento disponibili per questa lista.', 'You can choose from the available payment methods.')}
           </div>
         </div>
       </section>
@@ -125,10 +128,10 @@ export const GuestRegistryView: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
           <div>
             <h3 className="font-editorial text-2xl font-bold text-stone-900">
-              I Desideri degli Sposi
+              {tr("I Desideri degli Sposi", "Our Wishes")}
             </h3>
             <p className="text-xs text-stone-500 mt-0.5">
-              Partecipa con un contributo libero al regalo che preferisci
+              {tr("Partecipa con un contributo libero al regalo che preferisci", "Contribute any amount to the gift of your choice")}
             </p>
           </div>
 
@@ -137,7 +140,7 @@ export const GuestRegistryView: React.FC = () => {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
             <input
               type="text"
-              placeholder="Cerca nella lista regali..."
+              placeholder={tr('Cerca nella lista regali...', 'Search the gift registry...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3.5 py-2 text-xs bg-white border border-stone-200 rounded-xl text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-[#BCBF97]"
@@ -154,10 +157,10 @@ export const GuestRegistryView: React.FC = () => {
               <Gift className="w-7 h-7" />
             </div>
             <h3 className="text-lg font-bold text-stone-900 mb-1">
-              La lista regali è pronta!
+              {tr("La lista regali è pronta!", "The gift registry is ready!")}
             </h3>
             <p className="text-xs text-stone-600 mb-6 max-w-md mx-auto leading-relaxed">
-              Non hai ancora inserito nessun regalo. Aggiungi i primi desideri o le quote per il viaggio di nozze con quota libera PayPal o bonifico.
+              {tr("Non hai ancora inserito nessun regalo. Aggiungi i primi desideri o le quote per il viaggio di nozze con quota libera PayPal o bonifico.", "No gifts have been added yet.")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
@@ -165,28 +168,28 @@ export const GuestRegistryView: React.FC = () => {
                 onClick={() => setActiveView('organizer_gifts')}
                 className="w-full sm:w-auto px-5 py-2.5 bg-[#636842] hover:bg-[#525636] text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
               >
-                + Aggiungi Primo Desiderio
+                {tr("+ Aggiungi Primo Desiderio", "+ Add a gift")}
               </button>
               <button
                 type="button"
                 onClick={() => setActiveView('organizer_image')}
                 className="w-full sm:w-auto px-4 py-2.5 bg-[#FFE68A]/30 hover:bg-[#FFE68A]/50 text-stone-900 border border-amber-300 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
               >
-                Personalizza Foto Copertina
+                {tr("Personalizza Foto Copertina", "Customize cover photo")}
               </button>
             </div>
           </div>
         ) : filteredGifts.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-stone-200">
             <Gift className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-            <p className="text-stone-600 text-sm font-medium">Nessun regalo trovato per questo filtro.</p>
+            <p className="text-stone-600 text-sm font-medium">{tr("Nessun regalo trovato per questo filtro.", "No gifts match your search.")}</p>
             <button
               onClick={() => {
                 setSearchQuery('');
               }}
               className="mt-3 text-xs text-[#636842] hover:underline font-bold cursor-pointer"
             >
-              Mostra tutti i regali
+              {tr("Mostra tutti i regali", "Show all gifts")}
             </button>
           </div>
         ) : (
@@ -206,20 +209,20 @@ export const GuestRegistryView: React.FC = () => {
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone-100">
                     <img
                       src={gift.imageUrl}
-                      alt={gift.title}
+                      alt={translateContent(gift.title, language, gift.titleEn)}
                       className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
                       referrerPolicy="no-referrer"
                     />
                     {isCompleted && (
                       <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-2xs flex items-center justify-center">
                         <span className="bg-white/95 text-stone-900 text-xs font-semibold px-3 py-1 rounded-md shadow-sm">
-                          Completato con Amore
+                          {tr("Completato con Amore", "Completed with love")}
                         </span>
                       </div>
                     )}
                     {gift.isPriority && !isCompleted && (
                       <div className="absolute top-3 right-3 bg-[#636842] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded shadow-sm">
-                        Desiderio Speciale
+                        {tr("Desiderio Speciale", "Special wish")}
                       </div>
                     )}
                   </div>
@@ -228,15 +231,15 @@ export const GuestRegistryView: React.FC = () => {
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2 text-[11px] text-stone-400 font-medium">
-                        <span>{gift.contributionsCount} {gift.contributionsCount === 1 ? 'quota versata' : 'quote versate'}</span>
+                        <span>{gift.contributionsCount} {gift.contributionsCount === 1 ? tr('quota versata', 'contribution') : tr('quote versate', 'contributions')}</span>
                       </div>
 
                       <h3 className="font-editorial text-[0.80rem] font-semibold text-stone-900 leading-snug">
-                        {gift.title}
+                        {translateContent(gift.title, language, gift.titleEn)}
                       </h3>
-                      <p className="text-xs text-stone-500 font-medium">{gift.subtitle}</p>
+                      <p className="text-xs text-stone-500 font-medium">{translateContent(gift.subtitle, language, gift.subtitleEn)}</p>
                       <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed pt-1">
-                        {gift.description}
+                        {translateContent(gift.description, language, gift.descriptionEn)}
                       </p>
                     </div>
 
@@ -244,9 +247,9 @@ export const GuestRegistryView: React.FC = () => {
                     <div className="space-y-3 pt-2 border-t border-stone-100">
                       <div>
                         <div className="flex items-baseline justify-between text-xs mb-1.5">
-                          <span className="text-stone-500 font-medium">Avanzamento:</span>
+                          <span className="text-stone-500 font-medium">{tr("Avanzamento:", "Progress:")}</span>
                           <span className="font-bold text-[#636842] tabular-nums text-sm">
-                            {gift.isInfiniteQuota ? 'Quota libera' : `${percent}%`}
+                            {gift.isInfiniteQuota ? tr('Quota libera', 'Any amount') : `${percent}%`}
                           </span>
                         </div>
 
@@ -270,7 +273,7 @@ export const GuestRegistryView: React.FC = () => {
                             : 'bg-[#636842] hover:bg-[#525636] text-white shadow-xs'
                         }`}
                       >
-                        <span>Contributo libero</span>
+                        <span>{tr("Contributo libero", "Contribute any amount")}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>

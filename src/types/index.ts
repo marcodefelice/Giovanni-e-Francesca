@@ -8,6 +8,9 @@ export interface GiftItem {
   id: string;
   title: string;
   subtitle: string;
+  titleEn?: string;
+  subtitleEn?: string;
+  descriptionEn?: string;
   category: GiftCategory;
   description: string;
   imageUrl: string;
@@ -61,6 +64,8 @@ export interface RegistrySettings {
   eventDate?: string;
   eventLocation: string;
   welcomeMessage: string;
+  eventTitleEn?: string;
+  welcomeMessageEn?: string;
   currency: string;
   paypalEmail: string;
   paypalMeUsername: string;
