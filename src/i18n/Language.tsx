@@ -14,7 +14,23 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export const useLanguage = () => useContext(Context);
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
-  return <label className="flex items-center gap-1 text-xs font-semibold text-stone-700"><span className="sr-only">Language / Lingua</span><select aria-label="Language / Lingua" value={language} onChange={e => setLanguage(e.target.value as Language)} className="rounded-lg border border-stone-300 bg-white px-2 py-2 text-stone-800"><option value="it">IT</option><option value="en">EN</option></select></label>;
+  return (
+    <div role="group" aria-label="Lingua / Language" className="flex items-center justify-center gap-2">
+      {([['it', '🇮🇹', 'Italiano'], ['en', '🇬🇧', 'English']] as const).map(([code, flag, label]) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLanguage(code)}
+          aria-label={label}
+          aria-pressed={language === code}
+          title={label}
+          className={`flex h-10 w-12 items-center justify-center rounded-xl border text-2xl transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#636842] ${language === code ? 'border-[#636842] bg-[#BCBF97]/25 shadow-sm' : 'border-transparent hover:bg-stone-100'}`}
+        >
+          <span aria-hidden="true">{flag}</span>
+        </button>
+      ))}
+    </div>
+  );
 }
 const known: Record<string, string> = {
   'Il nostro Matrimonio': 'Our Wedding',

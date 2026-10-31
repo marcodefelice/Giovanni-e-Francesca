@@ -56,7 +56,6 @@ export const Navbar: React.FC = () => {
 
           {/* Right: Quick Switcher & Active Section */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSelector />
             {/* Quick access button to Dashboard when on guest view */}
             {activeView !== 'organizer_dashboard' ? (
               <button
@@ -88,6 +87,7 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         </div>
+        <div className="flex justify-center pb-2"><LanguageSelector /></div>
       </div>
     </header>
   );
